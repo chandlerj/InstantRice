@@ -2,8 +2,10 @@ import sys, os
 import random
 import numpy as np
 import cv2 as cv
+from PIL import Image
 from sklearn.cluster import KMeans
 from paths import Paths
+from rich import print 
 
 
 def grabColors(img_path: str, num_colors: int) -> list():
@@ -52,7 +54,8 @@ def compColors(color_list):
         compliments.append('#' + ''.join(comp))
     return compliments
 
-def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: list):
+def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: list, lock: bool):
+    print('[bold red]Updating i3 color scheme')
     data = ''
     with open(config_path, 'r') as file:
         data = file.readlines()
@@ -72,12 +75,19 @@ def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: li
         #update background image
         if "set $bgimage" in line:
             data[i] = 'set $bgimage ' + img_path + '\n'
-
+    
+    # update i3lock image, convert to png so it plays nice w i3lock
+    if lock:
+        print('[bold red]Creating lock screen')
+        img = Image.open(img_path)
+        img.save(r'/home/chandler/.config/i3/lock.png')
+     
     with open(config_path, 'w') as file:
         file.writelines(data)
 
 
 def updatePolybarTheme(config_path: str, colors: list, compliments: list):
+    print('[bold red]Updating polybar color scheme')
     data = ''
     with open(config_path, 'r') as file:
         data = file.readlines()
@@ -100,6 +110,7 @@ def updatePolybarTheme(config_path: str, colors: list, compliments: list):
 
 
 def updateRofiTheme(config_path: str, colors: list, compliments: list):
+    print('[bold red]Updating Rofi color scheme')
     data = ''
     with open(config_path, 'r') as file:
         data = file.readlines()
@@ -120,22 +131,70 @@ def updateRofiTheme(config_path: str, colors: list, compliments: list):
         file.writelines(data)
 
 def pickRandomWallpaper():
-    wallpaper = Paths['wallpapers'] + random.choice(os.listdir(Paths['wallpapers']))
-    print(f'picked wallpaper: {wallpaper}')
+    confirmed = False
+    while not confirmed:
+        wallpaper = Paths['wallpapers'] + random.choice(os.listdir(Paths['wallpapers']))
+        os.system(f'viu {wallpaper}')
+        print(f'picked wallpaper: {wallpaper}')
+        print('[bold](a)ccept (r)etry')
+        response = input('>')
+         
+        if response == 'a':
+            confirmed = True
+
     return wallpaper
-    
+
+
+def colorPickerUI(img_path: str):
+    #display the selected color scheme and ask user if they like it or want to generate a new color scheme
+    confirmed = False
+    while not confirmed:
+        print()
+        popularColors = grabColors(img_path, 5)
+        hex_colors = rgbToHex(popularColors)
+        hex_compliments = compColors(hex_colors)
+
+        main_colors = ''
+        complimentary_colors = ''
+
+        for color in hex_colors:
+           main_colors += f'[on {color}]   [/on {color}]' 
+        print(main_colors)
+        for color in hex_compliments:
+           complimentary_colors += f'[on {color}]   [/on {color}]' 
+        print(complimentary_colors)
+        print()
+
+        for i in range(len(hex_colors)):
+            print(f'[{hex_compliments[i]} on {hex_colors[i]}]\tGenerated Color Scheme\t\t')
+        for i in range(len(hex_colors)):
+            print(f'[{hex_colors[i]} on {hex_compliments[i]}]\tGenerated Color Scheme\t\t')
+
+        print('[bold](a)ccept (r)etry')
+        response = input('>')
+        
+        if response == 'a':
+            confirmed = True
+    return hex_colors, hex_compliments
 def main():
-    if sys.argv[1] == '-r':
+    if '-r' in sys.argv:
         img_path = pickRandomWallpaper()
     else:
         img_path = sys.argv[1]
-    popularColors = grabColors(img_path, 5)
-    hex_colors = rgbToHex(popularColors)
-    hex_compliments = compColors(hex_colors)
-    updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments)
+    
+    hex_colors, hex_compliments = colorPickerUI(img_path)
+    
     updatePolybarTheme(Paths['polybar'], hex_colors, hex_compliments)
     updateRofiTheme(Paths['rofi'], hex_colors, hex_compliments)
-    print("Theme changed successfully, please reload i3")
+    
+    if '--nolock' in sys.argv:
+        updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments, False)
+    else:
+        updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments, True)
 
+    
+    # print("Theme changed successfully, please reload i3")
+    print("[bold red]Restarting i3")
+    os.system("i3 restart")
 
 main()
