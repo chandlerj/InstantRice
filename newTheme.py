@@ -1,17 +1,11 @@
-"""
-Basically what I want this program to dynamically update the colors based on the desktop background
-so it will grab colors from the desktop background by finding the most promident colors and then set
-the system colors to these colors. I believe there are two major components involved in making this work
-
-i. The part of the program that analyzes an image and determines the most prominent colors
-ii. The part of the program that goes into all the configuration files and updates their color schemes
-"""
-import sys
+import sys, os
+import random
 import numpy as np
-import PIL
 import cv2 as cv
 from sklearn.cluster import KMeans
 from paths import Paths
+
+
 def grabColors(img_path: str, num_colors: int) -> list():
     """
     Takes in an image, and Number of colors, then returns a list of those colors.
@@ -41,6 +35,10 @@ def rgbToHex(input_values):
         hex_list.append('#{:02x}{:02x}{:02x}'.format(red, green, blue))
     return hex_list
 
+def hexToRGB(hex_value: str):
+    hex_value = hex_value.lstrip('#')
+    return tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4))
+
 def compColors(color_list):
     """
     given a list of colors, generate complimentary colors to contrast the prominent colors.
@@ -53,11 +51,12 @@ def compColors(color_list):
         comp = ['%02X' % (255 - int(a, 16)) for a in rgb]
         compliments.append('#' + ''.join(comp))
     return compliments
+
 def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: list):
-    # read in the config file
     data = ''
     with open(config_path, 'r') as file:
         data = file.readlines()
+
     for i, line in enumerate(data):
         # update colors
         if "set $bgcolor" in line:
@@ -71,10 +70,13 @@ def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: li
         if "set $in-text" in line:
             data[i] = 'set $in-text ' + compliments[1] + '\n'
         #update background image
-        if "exec_always feh" in line:
-            data[i] = 'exec_always feh --bg-fil ' + img_path + '\n'
+        if "set $bgimage" in line:
+            data[i] = 'set $bgimage ' + img_path + '\n'
+
     with open(config_path, 'w') as file:
         file.writelines(data)
+
+
 def updatePolybarTheme(config_path: str, colors: list, compliments: list):
     data = ''
     with open(config_path, 'r') as file:
@@ -86,7 +88,7 @@ def updatePolybarTheme(config_path: str, colors: list, compliments: list):
         if "background-alt =" in line and i == 20:
             data[i] = 'background-alt = ' + colors[1] + '\n'
         if "foreground =" in line and i == 21:
-            data[i] = 'foreground = ' + compliments[1] + '\n'
+            data[i] = 'foreground = ' + compliments[0] + '\n'
         if "primary =" in line and i == 22:
             data[i] = 'primary = ' + compliments[2] + '\n'
         if "secondary =" in line and i == 23:
@@ -96,13 +98,43 @@ def updatePolybarTheme(config_path: str, colors: list, compliments: list):
     with open(config_path, 'w') as file:
         file.writelines(data)
 
+
+def updateRofiTheme(config_path: str, colors: list, compliments: list):
+    data = ''
+    with open(config_path, 'r') as file:
+        data = file.readlines()
+    bg = hexToRGB(colors[1])
+    fg = hexToRGB(compliments[1])
+    lbg = hexToRGB(colors[0])
+    lfg = hexToRGB(colors[0])
+    for i,line in enumerate(data):
+        if 'background: ' in line and i == 23:
+            data[i] = '    background: rgba({}, {}, {}, 70%);\n'.format(bg[0], bg[1], bg[2])
+        if 'foreground: ' in line and i == 28:
+            data[i] = '    foreground: rgba({}, {}, {}, 100%);\n'.format(fg[0], fg[1], fg[2])
+        if 'lightbg: ' in line and i == 12:
+            data[i] = '    lightbg: rgba({}, {}, {}, 100%);\n'.format(lbg[0], lbg[1], lgb[2])
+        if 'lightfg: ' in line and i == 7:
+            data[i] = '    lightfg: rgba({}, {}, {}, 100%);\n'.format(lfg[0], lfg[1], lfg[2])
+    with open(config_path, 'w') as file:
+        file.writelines(data)
+
+def pickRandomWallpaper():
+    wallpaper = Paths['wallpapers'] + random.choice(os.listdir(Paths['wallpapers']))
+    print(f'picked wallpaper: {wallpaper}')
+    return wallpaper
+    
 def main():
-    img_path = sys.argv[1]
+    if sys.argv[1] == '-r':
+        img_path = pickRandomWallpaper()
+    else:
+        img_path = sys.argv[1]
     popularColors = grabColors(img_path, 5)
     hex_colors = rgbToHex(popularColors)
     hex_compliments = compColors(hex_colors)
     updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments)
     updatePolybarTheme(Paths['polybar'], hex_colors, hex_compliments)
+    updateRofiTheme(Paths['rofi'], hex_colors, hex_compliments)
     print("Theme changed successfully, please reload i3")
 
 
