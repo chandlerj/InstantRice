@@ -2,6 +2,7 @@ import sys, os
 import random
 import numpy as np
 import cv2 as cv
+import subprocess
 from PIL import Image
 from sklearn.cluster import KMeans
 from paths import Paths
@@ -54,7 +55,14 @@ def compColors(color_list):
         compliments.append('#' + ''.join(comp))
     return compliments
 
-def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: list, lock: bool):
+def getScreenResolution():
+    output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
+    resolution = output.split()[0].split(b'x')
+    width = int(resolution[0].decode('UTF-8'))
+    height = int(resolution[1].decode('UTF-8'))
+    return width, height
+
+def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: list, lock: bool, dmenu: bool):
     print('[bold red]Updating i3 color scheme')
     data = ''
     with open(config_path, 'r') as file:
@@ -75,13 +83,20 @@ def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: li
         #update background image
         if "set $bgimage" in line:
             data[i] = 'set $bgimage ' + img_path + '\n'
-    
+        if "bindsym $mod+d exec --no-startup-id dmenu_run" in line:
+            print('[bold red]Updating Dmenu color scheme')
+            data[i] = f"bindsym $mod+d exec --no-startup-id dmenu_run -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
     # update i3lock image, convert to png so it plays nice w i3lock
     if lock:
+        img = cv.imread(img_path)
+        imgHeight, imgWidth, _ = img.shape
+        screenWidth, screenHeight = getScreenResolution()
+        lock_scale = screenWidth / imgWidth
         print('[bold red]Creating lock screen')
-        img = Image.open(img_path)
-        img.save(r'/home/chandler/.config/i3/lock.png')
-     
+        dim = (int(imgWidth * lock_scale), int(imgHeight * lock_scale))
+        img = cv.resize(img, dim, interpolation= cv.INTER_AREA)
+        cv.imwrite('lock.png', img)
+        os.rename('lock.png', Paths['lockscreen'] + 'lock.png')
     with open(config_path, 'w') as file:
         file.writelines(data)
 
@@ -100,9 +115,9 @@ def updatePolybarTheme(config_path: str, colors: list, compliments: list):
         if "foreground =" in line and i == 21:
             data[i] = 'foreground = ' + compliments[0] + '\n'
         if "primary =" in line and i == 22:
-            data[i] = 'primary = ' + compliments[2] + '\n'
+            data[i] = 'primary = ' + compliments[1] + '\n'
         if "secondary =" in line and i == 23:
-            data[i] = 'secondary = ' + compliments[3] + '\n'
+            data[i] = 'secondary = ' + compliments[2] + '\n'
         if "disabled =" in line and i == 25:
             data[i] = 'disabled = ' + colors[2] + '\n'
     with open(config_path, 'w') as file:
@@ -150,7 +165,7 @@ def colorPickerUI(img_path: str):
     confirmed = False
     while not confirmed:
         print()
-        popularColors = grabColors(img_path, 5)
+        popularColors = grabColors(img_path, 3)
         hex_colors = rgbToHex(popularColors)
         hex_compliments = compColors(hex_colors)
 
@@ -164,16 +179,18 @@ def colorPickerUI(img_path: str):
            complimentary_colors += f'[on {color}]   [/on {color}]' 
         print(complimentary_colors)
         print()
-
+        count = 0
         for i in range(len(hex_colors)):
-            print(f'[{hex_compliments[i]} on {hex_colors[i]}]\tGenerated Color Scheme\t\t')
-        for i in range(len(hex_colors)):
-            print(f'[{hex_colors[i]} on {hex_compliments[i]}]\tGenerated Color Scheme\t\t')
-
+            print(f'[{hex_compliments[i]} on {hex_colors[i]}]\tGenerated Color Scheme\t\t ({count})')
+            count += 1
+#        for i in range(len(hex_colors)):
+#           print(f'[{hex_colors[i]} on {hex_compliments[i]}]\tGenerated Color Scheme\t\t ({count})')
+            count += 1
         print('[bold](a)ccept (r)etry')
-        response = input('>')
-        
-        if response == 'a':
+        response = input('> ')
+        if response == 'r':
+            continue
+        else:
             confirmed = True
     return hex_colors, hex_compliments
 def main():
@@ -183,18 +200,21 @@ def main():
         img_path = sys.argv[1]
     
     hex_colors, hex_compliments = colorPickerUI(img_path)
-    
-    updatePolybarTheme(Paths['polybar'], hex_colors, hex_compliments)
-    updateRofiTheme(Paths['rofi'], hex_colors, hex_compliments)
-    
-    if '--nolock' in sys.argv:
-        updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments, False)
-    else:
-        updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments, True)
+    if 'polybar' in Paths: 
+        updatePolybarTheme(Paths['polybar'], hex_colors, hex_compliments)
+    if 'rofi' in Paths:
+        updateRofiTheme(Paths['rofi'], hex_colors, hex_compliments)
+    if 'i3' in Paths:
+        update_dmenu = True if ('-dmenu' in sys.argv) else False 
+        if '--nolock' in sys.argv:
+            updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments, False, update_dmenu)
+        else:
+            updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments, True, update_dmenu)
+        
 
     
-    # print("Theme changed successfully, please reload i3")
-    print("[bold red]Restarting i3")
-    os.system("i3 restart")
+        # print("Theme changed successfully, please reload i3")
+        print("[bold red]Restarting i3")
+        os.system("i3 restart")
 
 main()
