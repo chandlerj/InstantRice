@@ -26,7 +26,7 @@ def grabColors(img_path: str, num_colors: int) -> list():
     clt.fit(img.reshape(-1, 3))
     return clt.cluster_centers_
 
-def rgbToHex(input_values):
+def rgbToHex(input_values: list):
     """
     Takes in a list of RBG color values and returns a list of those same colors as hex values
     """
@@ -42,7 +42,7 @@ def hexToRGB(hex_value: str):
     hex_value = hex_value.lstrip('#')
     return tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4))
 
-def compColors(color_list):
+def compColors(color_list: list):
     """
     given a list of colors, generate complimentary colors to contrast the prominent colors.
     return a list of these colors.
@@ -83,9 +83,11 @@ def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: li
         #update background image
         if "set $bgimage" in line:
             data[i] = 'set $bgimage ' + img_path + '\n'
+        
         if "bindsym $mod+d exec --no-startup-id dmenu_run" in line:
-            print('[bold red]Updating Dmenu color scheme')
-            data[i] = f"bindsym $mod+d exec --no-startup-id dmenu_run -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
+            if dmenu:
+                print('[bold red]Updating Dmenu color scheme')
+                data[i] = f"bindsym $mod+d exec --no-startup-id dmenu_run -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
     # update i3lock image, convert to png so it plays nice w i3lock
     if lock:
         img = cv.imread(img_path)
