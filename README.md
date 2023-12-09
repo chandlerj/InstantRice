@@ -1,4 +1,11 @@
-# Dynamic Theme Switcher
+```
+ _           _              _          _          
+(_)_ __  ___| |_ __ _ _ __ | |_   _ __(_) ___ ___ 
+| | '_ \/ __| __/ _` | '_ \| __| | '__| |/ __/ _ \
+| | | | \__ \ || (_| | | | | |_  | |  | | (_|  __/
+|_|_| |_|___/\__\__,_|_| |_|\__| |_|  |_|\___\___|
+```
+
 ![desktop with theme switcher](demo.png)
 This program will take in an image and generate a color palette based on the image. This palette will be determined by first doing a KMeans analysis on the image to find the most prominent colors, and then generating a complimentary color for each of the most prominent colors. After determining the colors, the program will automatically update the colors for i3 and Polybar to the new color scheme. Next, the program will update the background displayed to the image passed in and prompt the user to re-load i3.
 
