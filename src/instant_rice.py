@@ -8,7 +8,7 @@ from get_args import get_args
 from paths import Paths
 
 def main():
-    img_path = get_args(sys.argv) 
+    img_path, update_dmenu, i3lock = get_args(sys.argv) 
     hex_colors, hex_compliments = user_interface.colorPickerUI(img_path)
 
     if 'polybar' in Paths: 
@@ -16,7 +16,6 @@ def main():
     if 'rofi' in Paths:
         update_rofi.updateRofiTheme(Paths['rofi'], hex_colors, hex_compliments)
     if 'i3' in Paths:
-        update_dmenu = True if ('-dmenu' in sys.argv) else False 
         generate_i3lock = False if ('--nolock' in sys.argv) else True
         update_i3.updatei3Theme(Paths['i3'], img_path, hex_colors, hex_compliments, generate_i3lock, update_dmenu)
        

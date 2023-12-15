@@ -7,18 +7,18 @@ def updatePolybarTheme(config_path: str, colors: list, compliments: list):
         data = file.readlines()
     for i,line in enumerate(data):
         #update colors
-        if "background =" in line and i == 19:
-            data[i] = 'background = ' + colors[0] + '\n'
-        if "background-alt =" in line and i == 20:
-            data[i] = 'background-alt = ' + colors[1] + '\n'
-        if "foreground =" in line and i == 21:
-            data[i] = 'foreground = ' + compliments[0] + '\n'
-        if "primary =" in line and i == 22:
-            data[i] = 'primary = ' + compliments[1] + '\n'
-        if "secondary =" in line and i == 23:
-            data[i] = 'secondary = ' + compliments[2] + '\n'
-        if "disabled =" in line and i == 25:
-            data[i] = 'disabled = ' + colors[2] + '\n'
+        if "rice-background =" in line:
+            data[i] = 'rice-background = ' + colors[0] + '\n'
+        if "rice-background-alt =" in line:
+            data[i] = 'rice-background-alt = ' + colors[1] + '\n'
+        if "rice-foreground =" in line:
+            data[i] = 'rice-foreground = ' + compliments[0] + '\n'
+        if "rice-primary =" in line:
+            data[i] = 'rice-primary = ' + compliments[1] + '\n'
+        if "rice-secondary =" in line:
+            data[i] = 'rice-secondary = ' + compliments[2] + '\n'
+        if "rice-disabled =" in line:
+            data[i] = 'rice-disabled = ' + colors[2] + '\n'
     with open(config_path, 'w') as file:
         file.writelines(data)
 
