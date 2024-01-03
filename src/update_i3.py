@@ -5,7 +5,7 @@ import os
 from rich import print
 from paths import Paths
 
-def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: list, lock: bool, dmenu: bool):
+def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: list, lock: bool, dmenu: bool) -> None:
     print('[bold red]Updating i3 color scheme')
     data = ''
     with open(config_path, 'r') as file:
@@ -49,7 +49,7 @@ def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: li
     os.system("i3 restart")
 
 
-def getScreenResolution():
+def getScreenResolution() -> tuple:
     output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
     resolution = output.split()[0].split(b'x')
     width = int(resolution[0].decode('UTF-8'))

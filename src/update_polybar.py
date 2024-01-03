@@ -1,6 +1,6 @@
 
 
-def updatePolybarTheme(config_path: str, colors: list, compliments: list):
+def updatePolybarTheme(config_path: str, colors: list, compliments: list) -> None:
     print('[bold red]Updating polybar color scheme')
     data = ''
     with open(config_path, 'r') as file:
@@ -22,3 +22,5 @@ def updatePolybarTheme(config_path: str, colors: list, compliments: list):
     with open(config_path, 'w') as file:
         file.writelines(data)
 
+def initializePolybarConfig(config_path: str) -> None:
+    pass

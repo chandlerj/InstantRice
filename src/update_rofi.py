@@ -1,6 +1,6 @@
 import color_engine
 
-def updateRofiTheme(config_path: str, colors: list, compliments: list):
+def updateRofiTheme(config_path: str, colors: list, compliments: list) -> None:
     print('[bold red]Updating Rofi color scheme')
     data = ''
     with open(config_path, 'r') as file:

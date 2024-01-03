@@ -1,6 +1,6 @@
 import user_interface
 import os
-def get_args(args):
+def get_args(args) -> tuple:
     
     dmenu = False
     nolock = False

@@ -5,7 +5,7 @@ import color_engine
 from rich import print
 
    
-def colorPickerUI(img_path: str):
+def colorPickerUI(img_path: str) -> tuple:
 #display the selected color scheme and ask user if they like it or want to generate a new color scheme
     confirmed = False
     while not confirmed:
@@ -36,10 +36,12 @@ def colorPickerUI(img_path: str):
             confirmed = True
     return hex_colors, hex_compliments
 
-def pickRandomWallpaper():
+def pickRandomWallpaper() -> str:
     confirmed = False
     while not confirmed:
         wallpaper = Paths['wallpapers'] + random.choice(os.listdir(Paths['wallpapers']))
+        # TODO: Replace image preview with something native to python
+        # (Currently borrowing viu module from Rust)
         os.system(f'viu {wallpaper}')
         print(f'picked wallpaper: {wallpaper}')
         print('[bold](a)ccept (r)etry')
