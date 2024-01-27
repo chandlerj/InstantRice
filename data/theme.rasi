@@ -1,15 +1,13 @@
-{
-    rice-background: rgba(1, 19, 41, 100%);
-    rice-foreground: rgba(1, 19, 41, 100%);
-    rice-lightfg: rgba(1, 19, 41, 100%);
-    rice-lightbg: rgba(1, 19, 41, 100%);
+* {
+    rice-background: rgba(112, 80, 55, 70%);
+    rice-foreground: rgba(143, 175, 200, 100%);
+    rice-lightfg: rgba(152, 152, 150, 100%);
+    rice-lightbg: rgba(211, 191, 165, 100%);
     red:                         rgba ( 220, 50, 47, 100 % );
     selected-active-foreground:  var(rice-background);
-    lightfg: rgba(1, 19, 41, 100%);
     separatorcolor:              var(rice-foreground);
     urgent-foreground:           var(red);
-    alternate-urgent-background: var(lightbg);
-    lightbg: rgba(1, 19, 41, 100%);
+    alternate-urgent-background: var(rice-lightbg);
     background-color:            transparent;
     border-color:                var(rice-foreground);
     normal-background:           var(rice-background);
@@ -21,12 +19,10 @@
     urgent-background:           var(rice-background);
     selected-normal-foreground:  var(rice-lightbg);
     active-foreground:           var(red);
-    background: rgba(1, 51, 86, 70%);
     selected-active-background:  var(blue);
     active-background:           var(rice-background);
     selected-normal-background:  var(rice-background);
     alternate-normal-background: var(rice-background);
-    foreground: rgba(254, 204, 169, 100%);
     selected-urgent-foreground:  var(rice-background);
     normal-foreground:           var(rice-foreground);
     alternate-urgent-foreground: var(red);
@@ -104,7 +100,7 @@ message {
     border:       2px dash 0px 0px ;
 }
 textbox {
-    text-color: var(foreground);
+    text-color: var(rice-foreground);
 }
 listview {
     padding:      2px 0px 0px ;
