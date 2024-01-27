@@ -1,4 +1,4 @@
-
+from rich import print
 
 def updatePolybarTheme(config_path: str, colors: list, compliments: list) -> None:
     print('[bold red]Updating polybar color scheme')

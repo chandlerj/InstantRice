@@ -1,4 +1,5 @@
 import color_engine
+from rich import print
 
 def updateRofiTheme(config_path: str, colors: list, compliments: list) -> None:
     print('[bold red]Updating Rofi color scheme')
@@ -14,10 +15,11 @@ def updateRofiTheme(config_path: str, colors: list, compliments: list) -> None:
             data[i] = '    background: rgba({}, {}, {}, 70%);\n'.format(bg[0], bg[1], bg[2])
         if 'foreground: ' in line and i == 28:
             data[i] = '    foreground: rgba({}, {}, {}, 100%);\n'.format(fg[0], fg[1], fg[2])
-        if 'lightbg: ' in line and i == 12:
-            data[i] = '    lightbg: rgba({}, {}, {}, 100%);\n'.format(lbg[0], lbg[1], lgb[2])
+        if 'lightbg: ' in line and i == 11:
+            data[i] = '    lightbg: rgba({}, {}, {}, 100%);\n'.format(lbg[0], lbg[1], lbg[2])
         if 'lightfg: ' in line and i == 7:
             data[i] = '    lightfg: rgba({}, {}, {}, 100%);\n'.format(lfg[0], lfg[1], lfg[2])
     with open(config_path, 'w') as file:
         file.writelines(data)
+
 
