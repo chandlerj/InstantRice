@@ -33,8 +33,11 @@ def rgbToHex(input_values: list) -> list:
     return hex_list
 
 def hexToRGB(hex_value: str) -> tuple:
+    """
+    Takes in a list of Hex values and returns a tuple of those colors as rgb values
+    """
     hex_value = hex_value.lstrip('#')
-    return tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4))
+    return tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4)) # Magic :DDDDDD
 
 def compColors(color_list: list) -> list:
     """
