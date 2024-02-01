@@ -38,8 +38,16 @@ def colorPickerUI(img_path: str) -> tuple:
 
 def pickRandomWallpaper() -> str:
     confirmed = False
+    history = []
+    num_wallpapers = len(os.listdir(Paths['wallpapers']))
     while not confirmed:
+        if len(history) == num_wallpapers:
+            print('[bold blue] Wallpapers exhausted. Resetting history...')
+            history.clear()
         wallpaper = Paths['wallpapers'] + random.choice(os.listdir(Paths['wallpapers']))
+        if wallpaper in history:
+            continue
+        history.append(wallpaper)
         # TODO: Replace image preview with something native to python
         # (Currently borrowing viu module from Rust)
         os.system(f'viu {wallpaper}')
