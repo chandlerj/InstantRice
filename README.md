@@ -11,7 +11,7 @@ This program will take in an image and generate a color palette based on the ima
 
 ## Usage
 
-`python3 instant_rice.py [image_path] [-r] [--nolock]`
+`python3 instant_rice.py [image_path] [-r] [-nolock]`
  - `-r`: pick a random image from your `Paths['wallpapers']` directory
  - `--nolock`: bypass generating an i3 lock screen
 
@@ -19,6 +19,7 @@ This program will take in an image and generate a color palette based on the ima
 
  - Need Python3 version `> 3.6`
  - `numpy`, `cv2`, and `scipy_learn` module
+    - (optinal) install `rich` for pretty print
  - `viu` for displaying wallpaper previews
     - This program can be easily obtained from the Rust package manager using `cargo install viu`
 
@@ -45,3 +46,12 @@ This program will take in an image and generate a color palette based on the ima
             'lockscreen': '/home/chandler/.config/i3/'
             }
  ```
+
+ ## Things to change / anticipated features
+
+  - Use less dependencies
+    - Specifically, implement `k-means` algorithm from scratch instead of using library.
+    - Additionally, Replace `rich` with escape sequences.
+  - Implement file initializers. Will put the copy over InstantRice config files to appropriate location
+  - Tui to adjust appearance of system (window boarders, titlebars, bar settings, etc)
+  - *Down the line* Rewrite in a better language.
