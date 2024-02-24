@@ -27,16 +27,19 @@ def reconfigureRofi() -> None:
                 file.writelines(data)
         else:
             # create the rasi config
-            file = open(rf'{configPath}config.rasi', 'w')
-            file.write('@theme "theme.rasi"')
-            file.close()
+            with open(rf'{configPath}config.rasi', 'w') as file:
+                file.write('@theme "theme.rasi"')
 
     # copy the default config from data to .config
     dirExists = os.path.isdir(configPath)
     if dirExists:
         changeConfigContents()
     else:
-        print('path doesnt exist')
+        # Drop the Rofi theme config in rofi 
+        print(f'path doesnt exist. Creating directory {configPath}')
+        os.makedirs(configPath)
+        changeConfigContents()
+        dropRofiTheme()
 
 
 def dropRofiTheme():
@@ -48,7 +51,3 @@ def dropRofiTheme():
 
     with open(f'{configPath}theme.rasi', 'w') as file:
         file.writelines(data)
-    
-
-reconfigureRofi()
-dropRofiTheme()
