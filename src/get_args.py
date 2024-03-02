@@ -1,27 +1,20 @@
 import user_interface
 import os
-def get_args(args) -> tuple:
+def get_args(args, walls_dir) -> tuple:
     
     # arguments that can be passed into program
-    dmenu = False
-    nolock = False
     initialize = False
     reconfigure = False
-    nolock = False
 
     if '-r' in args:
-        img_path = user_interface.pickRandomWallpaper()
+        img_path = user_interface.pickRandomWallpaper(walls_dir)
     else:
         img_path = f"{os.getcwd()}/{args[1]}"
     if '--initialize' in args:
         initialize = True
     if '--reconfigure' in args:
         reconfigure = True
-    if '--dmenu' in args:
-        dmenu = True
-    if '--nolock' in args:
-        nolock = True
-    return img_path, dmenu, nolock, initialize, reconfigure
+    return img_path, initialize, reconfigure
 
 def usage(args) -> None:
     print(f"""

@@ -16,8 +16,8 @@ class systemConfig:
     rofi_config = ""
     username = ""
     rice_config = ""
-    
     #instant rice configuration settings
+    num_palettes = 15
     use_dmenu = False
     generate_i3_lock = False
 
@@ -69,5 +69,14 @@ class systemConfig:
                 match = line.split(' ')
                 self.generate_i3_lock = True if match[2] == 'True' else False
             if "wallpaper_directory"  in line:
-                match = line.split(' ')
+                match = line.strip().split(' ')
+                if not match[2].endswith('/'):
+                    match[2] += '/'
                 self.wallpaper_directory = match[2]
+            if "num_palettes" in line:
+                match = line.strip().split(' ')
+                if match[2].isdigit():
+                    self.num_palettes = int(match[2])
+                else:
+                    print(f'Invalid configuration parameter at line {i}:\n{line}.\nUsing default \
+                            configuration of 15 palettes.')
