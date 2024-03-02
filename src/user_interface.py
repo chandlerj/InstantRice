@@ -29,10 +29,8 @@ def selectPalette(img_path: str, num_palettes: int) -> tuple:
         for color in hex_compliments:
            complimentary_colors += f'[on {color}]   [/on {color}]' 
         print(complimentary_colors, '\n')
-        count = 0
         for i in range(len(hex_colors)):
-            print(f'[{hex_compliments[i]} on {hex_colors[i]}]\tGenerated Color Scheme\t\t ({count})', f'contrast: {constrast_levels[i]}')
-            count += 1
+            print(f'[{hex_compliments[i]} on {hex_colors[i]}]\tGenerated Color Scheme\t\t ({i: 3})', f'contrast: {constrast_levels[i]:.2f}')
         print('[bold](a)ccept palette (g)enerate new palette')
         response = input('> ')
         if response == 'a':
