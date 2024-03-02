@@ -3,9 +3,16 @@ import cv2 as cv
 import os
 
 from rich import print
-from paths import Paths
 
-def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: list, lock: bool, dmenu: bool) -> None:
+def updatei3Theme(
+        config_path: str, 
+        img_path: str, 
+        colors: list, 
+        compliments: list, 
+        lock: bool, 
+        dmenu: bool,
+        lock_image_path: str,
+        ) -> None:
     print('[bold red]Updating i3 color scheme')
     data = ''
     with open(config_path, 'r') as file:
@@ -41,7 +48,7 @@ def updatei3Theme(config_path: str, img_path: str, colors: list, compliments: li
         dim = (int(imgWidth * lock_scale), int(imgHeight * lock_scale))
         img = cv.resize(img, dim, interpolation= cv.INTER_AREA)
         cv.imwrite('lock.png', img)
-        os.rename('lock.png', Paths['lockscreen'] + 'lock.png')
+        os.rename('lock.png', lock_image_path)
     with open(config_path, 'w') as file:
         file.writelines(data)
    

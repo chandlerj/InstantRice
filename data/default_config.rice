@@ -1,0 +1,4 @@
+use_dmenu = True # apply color scheme to dmenu in i3 configuration
+generate_i3_lock = True # convert image to png and scale to screen size for i3 lock image
+
+#wallpaper_directory = '/home/[username]/Pictures/papes'
