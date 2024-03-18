@@ -1,7 +1,7 @@
 import cv2 as cv
 from sklearn.cluster import KMeans
 
-def grabColors(img_path: str, num_colors: int) -> list():
+def grabColors(img_path: str, num_colors: int) -> list:
     """
     Takes in an image, and Number of colors, then returns a list of those colors.
     The list of colors will contain the most prominent colors present in the image.
@@ -32,7 +32,7 @@ def compColors(color_list: list) -> list:
         compliments.append('#' + ''.join(comp))
     return compliments
 
-def checkContrast(hex_color_list: list, hex_compliment_list: list) -> list():
+def checkContrast(hex_color_list: list, hex_compliment_list: list) -> list:
     """
     Given the list of colors and their compliments, reutrn a list of the contrast values
     between the colors

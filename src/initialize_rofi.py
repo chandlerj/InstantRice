@@ -11,9 +11,9 @@ def reconfigureRofi() -> None:
     print('[bold red]Initializing Rofi Theme')
     
     def changeConfigContents() -> None:
-        print('path exists')
+        print('[bold green]path exists')
         if os.path.exists(f'{configPath}config.rasi'):
-            print('config present')
+            print('[bold green]config present. modifying existing configuration')
             with open(f'{configPath}config.rasi', 'r') as file:
                 data = file.readlines()
             themeSet = False
@@ -34,9 +34,10 @@ def reconfigureRofi() -> None:
     dirExists = os.path.isdir(configPath)
     if dirExists:
         changeConfigContents()
+        dropRofiTheme()
     else:
         # Drop the Rofi theme config in rofi 
-        print(f'path doesnt exist. Creating directory {configPath}')
+        print(f'[bold red]path doesnt exist. Creating directory {configPath}')
         os.makedirs(configPath)
         changeConfigContents()
         dropRofiTheme()

@@ -1,6 +1,5 @@
 import os
 import random
-
 import color_engine
 from rich import print
 
