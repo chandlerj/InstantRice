@@ -9,15 +9,53 @@ def updatei3Theme(
         img_path: str, 
         colors: list, 
         compliments: list, 
-        lock: bool, 
+        update_i3_lock: bool, 
         dmenu: bool,
-        lock_image_path: str,
+        lock_img_path: str,
         ) -> None:
+    
     print('[bold red]Updating i3 color scheme')
+    
+
+    update_i3_colors(config_path, colors, compliments, dmenu, img_path)
+     
+    if update_i3_lock:
+        change_i3_lock_img(img_path, lock_img_path)
+    
+    
+    print("[bold red]Restarting i3")
+    os.system("i3 restart")
+
+
+def change_i3_lock_img(img_path: str, lock_img_path):
+    img = cv.imread(img_path)
+    
+    imgHeight, imgWidth, _ = img.shape
+    screenWidth, screenHeight = getScreenResolution()
+    h_lock_scale = screenWidth / imgWidth
+    v_lock_scale = screenHeight / imgHeight
+    
+    print('[bold red]Creating lock screen')
+      
+    dim = (int(imgWidth * h_lock_scale), int(imgHeight * v_lock_scale))
+    img = cv.resize(img, dim, interpolation= cv.INTER_AREA)
+     
+    cv.imwrite('lock.png', img)
+    os.rename('lock.png', lock_img_path)
+
+
+def update_i3_colors(
+        config_path: str, 
+        colors: list, 
+        compliments: list, 
+        dmenu: bool, 
+        img_path: str
+        ) -> None:
     data = ''
     with open(config_path, 'r') as file:
         data = file.readlines()
-
+     
+     
     for i, line in enumerate(data):
         # update colors
         if "set $bgcolor" in line:
@@ -30,34 +68,22 @@ def updatei3Theme(
             data[i] = 'set $indicator ' + colors[2] + '\n'
         if "set $in-text" in line:
             data[i] = 'set $in-text ' + compliments[1] + '\n'
-        #update background image
+        # update background image
         if "set $bgimage" in line:
             data[i] = 'set $bgimage ' + img_path + '\n'
-        
+        # update i3 lock image        
         if "bindsym $mod+d exec --no-startup-id dmenu_run" in line:
             if dmenu:
                 print('[bold red]Updating Dmenu color scheme')
                 data[i] = f"bindsym $mod+d exec --no-startup-id dmenu_run -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
-    # update i3lock image, convert to png so it plays nice w i3lock
-    if lock:
-        img = cv.imread(img_path)
-        imgHeight, imgWidth, _ = img.shape
-        screenWidth, screenHeight = getScreenResolution()
-        lock_scale = screenWidth / imgWidth
-        print('[bold red]Creating lock screen')
-        dim = (int(imgWidth * lock_scale), int(imgHeight * lock_scale))
-        img = cv.resize(img, dim, interpolation= cv.INTER_AREA)
-        cv.imwrite('lock.png', img)
-        os.rename('lock.png', lock_image_path)
+
+
     with open(config_path, 'w') as file:
         file.writelines(data)
-   
-    print("[bold red]Restarting i3")
-    os.system("i3 restart")
-
+ 
 
 def getScreenResolution() -> tuple:
-    output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen("xdpyinfo | awk '/dimensions:/ { print $2 }'",shell=True, stdout=subprocess.PIPE).communicate()[0]
     resolution = output.split()[0].split(b'x')
     width = int(resolution[0].decode('UTF-8'))
     height = int(resolution[1].decode('UTF-8'))
