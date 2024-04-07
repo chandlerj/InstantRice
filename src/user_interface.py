@@ -50,7 +50,8 @@ def selectPalette(img_path: str, num_palettes: int) -> tuple:
 
     return hex_colors, hex_compliments
 
-def selectColorsFromPalette(hex_colors, hex_compliments):
+def selectColorsFromPalette(hex_colors: list, hex_compliments: list) -> tuple:
+    selectedColors = []
     selected = False
     while not selected:
         print('[bold blue]Select top 3 colors from list in order Primary, Secondary, Accent (IE, "4 10 6")')
@@ -62,7 +63,7 @@ def selectColorsFromPalette(hex_colors, hex_compliments):
         else:
             print('[bold red]Invalid selection. Use positive integers corresponding to color pair to select.')
             continue
-
+    
     selectedColors = [int(i) for i in selectedColors] 
     final_colors = []
     final_compliments = []
@@ -73,10 +74,11 @@ def selectColorsFromPalette(hex_colors, hex_compliments):
 
     return final_colors, final_compliments
 
-def pickRandomWallpaper(walls_dir) -> str:
+def pickRandomWallpaper(walls_dir: str) -> str:
     confirmed = False
     history = []
     num_wallpapers = len(os.listdir(walls_dir))
+    wallpaper = ''
     while not confirmed:
         if len(history) == num_wallpapers:
             print('[bold blue] Wallpapers exhausted. Resetting history...')

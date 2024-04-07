@@ -50,9 +50,17 @@ def checkContrast(hex_color_list: list, hex_compliment_list: list) -> list:
     return contrast_values
 
 
-def relativeLuminance(color: list):
-    
-    threshold = 0.03928 # this whole function is magic constants lol
+def relativeLuminance(color: list) -> float:
+    """
+    Determines the luminance of color. The luminance allows us to
+    compute the contrast between two colors by comparing their
+    relative luminance.
+
+    The magic constants in this function are all taken from the following
+    description of relative luminance:
+    https://www.w3.org/TR/WCAG20/#relativeluminancedef
+    """ 
+    threshold = 0.03928 
     channels = []
 
     for channel in color:
@@ -86,12 +94,12 @@ def hexToRGB(hex_value: str) -> tuple:
     Takes in a list of Hex values and returns a tuple of those colors as rgb values
     """
     hex_value = hex_value.lstrip('#')
-    return tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4)) # Magic :DDDDDD
+    return tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4)) 
 
 def hexToRGB_list(hex_list: list) -> list:
     colors = []
     for color in hex_list:
         hex_value = color.lstrip('#')
-        colors.append(tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4))) # Magic :DDDDDD
+        colors.append(tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4))) 
     return colors
 
