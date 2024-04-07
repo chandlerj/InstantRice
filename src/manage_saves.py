@@ -3,7 +3,7 @@ from rich import print
 
 def save_color_palette(hex_colors, hex_compliments, save_directory):
     
-    colors = [hex_colors, hex_compliments]
+    colors = (hex_colors, hex_compliments)
 
     with open(save_directory, 'wb') as file:
         pickle.dump(colors, file, pickle.HIGHEST_PROTOCOL)

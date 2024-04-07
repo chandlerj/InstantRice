@@ -2,20 +2,30 @@ import user_interface
 import manage_saves
 import os
 from rich import print
+
+
 def get_args(args, walls_dir) -> tuple:
     
     # arguments that can be passed into program
+    VALID_ARGS = ['-r', '-p', '--initialize', '--reconfigure']
+    
     initialize = False
     reconfigure = False
     color_save = None
-    VALID_ARGS = ['-r', '-p', '--initialize', '--reconfigure']
+    
+    # load saved palette
     if '-p' in args:
         index = args.index('-p')
-        if os.path.isfile(args[index + 1]):
-             color_save = manage_saves.load_color_palette(args[index + 1])
-        else:
-             print('invalid arguments. -p should be followed by a color palette save')
-             exit(2)
+        try:
+            if os.path.isfile(args[index + 1]):
+                 color_save = manage_saves.load_color_palette(args[index + 1])
+            else:
+                 print(f'[bold red] Error!! invalid argument {args[index + 1]}. -p should be followed by a color palette save')
+                 exit(2)
+        except IndexError:
+            print('[bold red]Error!! -p should be followed by location of a color palette save')
+            usage(args)
+            exit(2)
    
     if '-r' in args:
         img_path = user_interface.pickRandomWallpaper(walls_dir)
@@ -31,6 +41,7 @@ def get_args(args, walls_dir) -> tuple:
     if '--reconfigure' in args:
         reconfigure = True
     return img_path, initialize, reconfigure, color_save
+
 
 def usage(args) -> None:
     print(f"""Instant Rice - An automatic theming utilitiy

@@ -13,8 +13,6 @@ def grabColors(img_path: str, num_colors: int) -> list:
     # scale image down by factor of 10 to decrease computation time
     dim = (int(len(img[0])/10), int(len(img)/10))
     img = cv.resize(img, dim, interpolation= cv.INTER_AREA)
-    # TODO: implement KMeans clustering from scratch to
-    # improve program modularity
     clt = KMeans(n_clusters=num_colors, n_init='auto')
     clt.fit(img.reshape(-1, 3))
     return clt.cluster_centers_
