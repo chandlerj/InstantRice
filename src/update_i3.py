@@ -51,10 +51,11 @@ def update_i3_colors(
         dmenu: bool, 
         img_path: str
         ) -> None:
+    
     data = ''
+    
     with open(config_path, 'r') as file:
         data = file.readlines()
-     
      
     for i, line in enumerate(data):
         # update colors
