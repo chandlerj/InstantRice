@@ -23,6 +23,7 @@ class systemConfig:
         self.use_dmenu = False
         self.generate_i3_lock = False
         self.menu_keybind = ""
+        self.theme_directory = ""
 
         print('[bold green]Loading configuration files')
         
@@ -38,6 +39,7 @@ class systemConfig:
             self.polybar_config = f'/home/{self.username}/.config/polybar/config.ini'
         if os.path.exists(f'/home/{self.username}/.config/rofi/config.rasi'):
             self.rofi_config = f'/home/{self.username}/.config/rofi/config.rasi'
+
         if os.path.exists(f'/home/{self.username}/.config/instantrice/'):
             self.rice_config = f'/home/{self.username}/.config/instantrice/config.rice'
             self.get_user_preferences()
@@ -86,6 +88,13 @@ class systemConfig:
                 if match[2].isdigit():
                     self.num_palettes = int(match[2])
                 else:
+                    print(f'Invalid configuration parameter at line {i}:\n{line}.\nUsing default \
+                            configuration of 15 palettes.')
+            if "theme_directory" in line:
+                match = line.strip().split(' ')
+                if not match[2].endswith('/'):
+                    match[2] += '/'
+                self.theme_directory = match[2]
                     print(f'Invalid configuration parameter at line {i}:\n{line}Using default configuration of 15 palettes.')
 
             if "menu_keybind" in line:

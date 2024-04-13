@@ -24,9 +24,9 @@ def compColors(color_list: list) -> list:
     """
     compliments = []
     for color in color_list:
-        curr_hex = color[1:] # slice off the # from the hex code
+        curr_hex = color[1:] 
         rgb = (curr_hex[0:2], curr_hex[2:4], curr_hex[4:6])
-        comp = ['%02X' % (255 - int(a, 16)) for a in rgb] # magic :D
+        comp = ['%02X' % (255 - int(a, 16)) for a in rgb]
         compliments.append('#' + ''.join(comp))
     return compliments
 
@@ -48,6 +48,7 @@ def checkContrast(hex_color_list: list, hex_compliment_list: list) -> list:
         value = (max(color_luminence, compliment_luminence) + 0.05) / (min(color_luminence, compliment_luminence) + 0.05)
         contrast_values.append(value)
     return contrast_values
+
 
 
 def relativeLuminance(color: list) -> float:
@@ -76,7 +77,6 @@ def relativeLuminance(color: list) -> float:
     return luminance
     
 
-
 def rgbToHex(input_values: list) -> list:
     """
     Takes in a list of RBG color values and returns a list of those same colors as hex values
@@ -89,12 +89,14 @@ def rgbToHex(input_values: list) -> list:
         hex_list.append('#{:02x}{:02x}{:02x}'.format(red, green, blue))
     return hex_list
 
+
 def hexToRGB(hex_value: str) -> tuple:
     """
     Takes in a list of Hex values and returns a tuple of those colors as rgb values
     """
     hex_value = hex_value.lstrip('#')
     return tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4)) 
+
 
 def hexToRGB_list(hex_list: list) -> list:
     colors = []

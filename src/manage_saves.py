@@ -1,21 +1,23 @@
-import pickle
 from rich import print
-
-def save_color_palette(hex_colors, hex_compliments, save_directory):
+from theme import Theme
+import json
+def save_theme(hex_colors, hex_compliments, wallpaper_location, save_location):
+    """
+    Save a theme to the disk at a specified location as a json object.
+    """ 
     
-    colors = (hex_colors, hex_compliments)
 
-    with open(save_directory, 'wb') as file:
-        pickle.dump(colors, file, pickle.HIGHEST_PROTOCOL)
-        
+    theme = Theme(hex_colors, hex_compliments, wallpaper_location)
+
+
+    with open(save_location, 'w') as file:
+        json.dump(theme.toDict(), file)
     print('[bold green]color palette saved successfully')
 
-def load_color_palette(save_location):
-    with open(save_location, 'rb') as file:
-        try:
-            data = pickle.load(file)
-        except:
-             print('invalid arguments. -p should be followed by a color palette save')
-             exit(2)
-
+def load_theme(save_location):
+    """
+    Load a theme from disk at a specified location
+    """
+    with open(save_location, 'r') as file:
+        data = json.loads(file.read()) 
     return data

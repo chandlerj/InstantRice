@@ -1,16 +1,17 @@
 import os
 import random
 import color_engine
+import manage_saves
 from rich import print
 
    
-def colorPickerUI(img_path: str, num_palettes: int, saved_colors = None) -> tuple:
-#display the selected color scheme and ask user if they like it or want to generate a new color scheme
-    if saved_colors == None:
-        hex_colors, hex_compliments = selectPalette(img_path, num_palettes) 
-    else:
-        hex_colors, hex_compliments = saved_colors
-        print(f'[bold green] colors successfully loaded from file')
+
+def colorPickerUI(img_path: str, num_palettes: int) -> tuple:
+    """
+    display the selected color scheme and ask user if they like it 
+    or want to generate a new color scheme
+    """
+    hex_colors, hex_compliments = selectPalette(img_path, num_palettes) 
     final_colors, final_compliments = selectColorsFromPalette(hex_colors, hex_compliments)
     return final_colors, final_compliments
 
@@ -30,7 +31,6 @@ def displayColors(hex_colors: list, hex_compliments: list):
 
 
 def selectPalette(img_path: str, num_palettes: int) -> tuple:
-
     confirmed = False
     hex_colors = None
     hex_compliments = None
@@ -98,3 +98,15 @@ def pickRandomWallpaper(walls_dir: str) -> str:
             confirmed = True
 
     return wallpaper
+
+def saveThemePrompt(hex_colors, hex_compliments, wallpaper_location, theme_location):
+    print('[bold green]Save configuration as preset? (y/n)')
+    do_save = input('>')
+    if do_save == 'y':
+        print('[bold green]enter theme name')
+        theme_name = input('>')
+        theme_path = theme_location + theme_name + ".theme"
+        
+        manage_saves.save_theme(hex_colors, hex_compliments, wallpaper_location, theme_path)
+        print(f'[bold green]Theme {theme_name} saved!')
+        
