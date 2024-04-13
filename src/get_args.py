@@ -4,25 +4,25 @@ import os
 from rich import print
 
 
-def get_args(args, walls_dir) -> tuple:
+def get_args(args, walls_dir, theme_dir) -> tuple:
     
     # arguments that can be passed into program
     VALID_ARGS = ['-r', '-p', '--initialize', '--reconfigure']
     
     initialize = False
     reconfigure = False
-
     theme = None
-    VALID_ARGS = ['-r', '-p', '--initialize', '--reconfigure']
-    
+    img_path = ''
     if '-p' in args:
         index = args.index('-p')
         isFile = os.path.isfile(args[index + 1])
         if isFile == True:
              print("reached")
              theme = manage_saves.load_theme(args[index + 1])
-   
-    if '-r' in args:
+    elif '-t' in args:
+        theme = user_interface.themeSelector(theme_dir)
+        img_path = theme['wallpaper']
+    elif '-r' in args:
         img_path = user_interface.pickRandomWallpaper(walls_dir)
     else:
         img_path = f"{os.getcwd()}/{args[1]}"

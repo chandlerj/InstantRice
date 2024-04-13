@@ -15,6 +15,7 @@ def colorPickerUI(img_path: str, num_palettes: int) -> tuple:
     final_colors, final_compliments = selectColorsFromPalette(hex_colors, hex_compliments)
     return final_colors, final_compliments
 
+
 def displayColors(hex_colors: list, hex_compliments: list):
     constrast_levels = color_engine.checkContrast(hex_colors, hex_compliments)
     main_colors = ''
@@ -50,6 +51,7 @@ def selectPalette(img_path: str, num_palettes: int) -> tuple:
 
     return hex_colors, hex_compliments
 
+
 def selectColorsFromPalette(hex_colors: list, hex_compliments: list) -> tuple:
     selectedColors = []
     selected = False
@@ -74,6 +76,7 @@ def selectColorsFromPalette(hex_colors: list, hex_compliments: list) -> tuple:
 
     return final_colors, final_compliments
 
+
 def pickRandomWallpaper(walls_dir: str) -> str:
     confirmed = False
     history = []
@@ -87,8 +90,6 @@ def pickRandomWallpaper(walls_dir: str) -> str:
         if wallpaper in history:
             continue
         history.append(wallpaper)
-        # TODO: Replace image preview with something native to python
-        # (Currently borrowing viu module from Rust)
         os.system(f'viu {wallpaper}')
         print(f'picked wallpaper: {wallpaper}')
         print('[bold](a)ccept (r)etry')
@@ -99,6 +100,7 @@ def pickRandomWallpaper(walls_dir: str) -> str:
 
     return wallpaper
 
+
 def saveThemePrompt(hex_colors, hex_compliments, wallpaper_location, theme_location):
     print('[bold green]Save configuration as preset? (y/n)')
     do_save = input('>')
@@ -107,6 +109,36 @@ def saveThemePrompt(hex_colors, hex_compliments, wallpaper_location, theme_locat
         theme_name = input('>')
         theme_path = theme_location + theme_name + ".theme"
         
-        manage_saves.save_theme(hex_colors, hex_compliments, wallpaper_location, theme_path)
+        manage_saves.save_theme(hex_colors, hex_compliments, wallpaper_location, theme_path, theme_name)
         print(f'[bold green]Theme {theme_name} saved!')
-        
+
+
+def themeSelector(theme_dir):
+    all_themes = manage_saves.getAllThemes(theme_dir)
+    num_themes = len(all_themes) - 1 
+
+
+    for i, theme in enumerate(all_themes): 
+        colors = ''
+        comp_colors = ''
+        for j in range(len(theme['colors'])):
+            colors += f'[on {theme['colors'][j]}]  [/on {theme['colors'][j]}]'
+            comp_colors += f'[on {theme['comp_colors'][j]}]  [/on {theme['comp_colors'][j]}]'
+        print(f'{colors} Theme ({i}): {theme['name']}\n{comp_colors} Wallpaper: {theme['wallpaper']}')
+        os.system(f'viu {theme['wallpaper']} -w 50')
+    print('[bold green]Select theme (IE, 4)')
+
+    
+    while True:
+        response = input('>')
+        if response.isdigit():
+            if int(response) <= num_themes:
+                # valid selection
+                return all_themes[int(response)]
+            else:
+                print(f'[bold red]invalid selection, please enter a valid integer [0 - {num_themes}]') 
+                continue
+        else:
+            print(f'[bold red]invalid selection, please enter a valid integer [0 - {num_themes}]') 
+            continue
+

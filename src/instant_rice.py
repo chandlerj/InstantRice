@@ -8,13 +8,14 @@ import initialize_rofi
 from get_args import get_args,usage
 from load_config import systemConfig      
 from rich import print
+
 if __name__ == '__main__':
 
     if len(sys.argv) > 1:
         
         config = systemConfig()
         
-        img_path, initialize, reconfigure, theme = get_args(sys.argv, config.wallpaper_directory) 
+        img_path, initialize, reconfigure, theme = get_args(sys.argv, config.wallpaper_directory, config.theme_directory) 
 
         if initialize:
             initialize_rofi.reconfigureRofi()
