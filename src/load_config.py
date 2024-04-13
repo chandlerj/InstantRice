@@ -90,14 +90,13 @@ class systemConfig:
                 else:
                     print(f'Invalid configuration parameter at line {i}:\n{line}.\nUsing default \
                             configuration of 15 palettes.')
+
             if "theme_directory" in line:
                 match = line.strip().split(' ')
                 if not match[2].endswith('/'):
                     match[2] += '/'
                 self.theme_directory = match[2]
-                    print(f'Invalid configuration parameter at line {i}:\n{line}Using default configuration of 15 palettes.')
 
             if "menu_keybind" in line:
                 match = line.strip().split(' ')
                 self.menu_keybind = match[2]
-                print(self.menu_keybind)
