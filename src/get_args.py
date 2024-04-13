@@ -17,25 +17,30 @@ def get_args(args, walls_dir, theme_dir) -> tuple:
         index = args.index('-p')
         isFile = os.path.isfile(args[index + 1])
         if isFile == True:
-             print("reached")
              theme = manage_saves.load_theme(args[index + 1])
+        img_path = grab_image(args) 
     elif '-t' in args:
         theme = user_interface.themeSelector(theme_dir)
         img_path = theme['wallpaper']
     elif '-r' in args:
         img_path = user_interface.pickRandomWallpaper(walls_dir)
     else:
-        img_path = f"{os.getcwd()}/{args[1]}"
-        if not os.path.exists(img_path) and\
-                args[1] not in VALID_ARGS:
-            print(f'[bold red]ERROR: invalid image path {os.getcwd()}/{args[1]}')
-            exit(2)
+        img_path = grab_image(args)
 
     if '--initialize' in args:
         initialize = True
     if '--reconfigure' in args:
         reconfigure = True
     return img_path, initialize, reconfigure, theme  
+
+
+def grab_image(args):
+    img_path = f"{os.getcwd()}/{args[1]}"
+    if not os.path.exists(img_path):
+        print(f'[bold red]ERROR: invalid image path {os.getcwd()}/{args[1]}')
+        exit(2)
+    else:
+        return img_path
 
 
 def usage(args) -> None:

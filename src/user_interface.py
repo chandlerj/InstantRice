@@ -126,7 +126,7 @@ def themeSelector(theme_dir):
             comp_colors += f'[on {theme['comp_colors'][j]}]  [/on {theme['comp_colors'][j]}]'
         print(f'{colors} Theme ({i}): {theme['name']}\n{comp_colors} Wallpaper: {theme['wallpaper']}')
         os.system(f'viu {theme['wallpaper']} -w 50')
-    print('[bold green]Select theme (IE, 4)')
+    print(f'[bold green]Select theme (0, {num_themes})')
 
     
     while True:
