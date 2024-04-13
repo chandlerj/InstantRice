@@ -9,20 +9,22 @@ class systemConfig:
     file for instant rice.
     """
     
-    i3_config = ""
-    i3_lock_image = ""
-    polybar_config = ""
-    wallpaper_directory = ""
-    rofi_config = ""
-    username = ""
-    rice_config = ""
-    #instant rice configuration settings
-    num_palettes = 15
-    use_dmenu = False
-    generate_i3_lock = False
-    theme_directory = ""
-
+    
     def __init__(self):
+        self.i3_config = ""
+        self.i3_lock_image = ""
+        self.polybar_config = ""
+        self.wallpaper_directory = ""
+        self.rofi_config = ""
+        self.username = ""
+        self.rice_config = ""
+        #instant rice configuration settings
+        self.num_palettes = 15
+        self.use_dmenu = False
+        self.generate_i3_lock = False
+        self.menu_keybind = ""
+        self.theme_directory = ""
+
         print('[bold green]Loading configuration files')
         
         #Grab username to find configuration files
@@ -66,15 +68,21 @@ class systemConfig:
         for i, line in enumerate(data):
             if "use_dmenu" in line:
                 match = line.split(' ')
-                self.use_dmenu = True if match[2] == 'True' else False
+                self.use_dmenu = True if match[2].lower() == 'true' else False
+
             if "generate_i3_lock" in line:
                 match = line.split(' ')
-                self.generate_i3_lock = True if match[2] == 'True' else False
+                self.generate_i3_lock = True if match[2].lower() == 'true' else False
+
             if "wallpaper_directory"  in line:
                 match = line.strip().split(' ')
                 if not match[2].endswith('/'):
                     match[2] += '/'
-                self.wallpaper_directory = match[2]
+                if os.path.exists(match[2]):
+                    self.wallpaper_directory = match[2]
+                else:
+                    print(f'Invalid configuration parameter at line {i}:\n{line}Directory does not exist; Please fix error before rerunning.')
+
             if "num_palettes" in line:
                 match = line.strip().split(' ')
                 if match[2].isdigit():
@@ -87,3 +95,9 @@ class systemConfig:
                 if not match[2].endswith('/'):
                     match[2] += '/'
                 self.theme_directory = match[2]
+                    print(f'Invalid configuration parameter at line {i}:\n{line}Using default configuration of 15 palettes.')
+
+            if "menu_keybind" in line:
+                match = line.strip().split(' ')
+                self.menu_keybind = match[2]
+                print(self.menu_keybind)

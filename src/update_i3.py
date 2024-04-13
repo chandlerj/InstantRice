@@ -12,12 +12,13 @@ def updatei3Theme(
         update_i3_lock: bool, 
         dmenu: bool,
         lock_img_path: str,
+        menu_keybind: str,
         ) -> None:
     
     print('[bold red]Updating i3 color scheme')
     
 
-    update_i3_colors(config_path, colors, compliments, dmenu, img_path)
+    update_i3_colors(config_path, colors, compliments, dmenu, img_path, menu_keybind)
      
     if update_i3_lock:
         change_i3_lock_img(img_path, lock_img_path)
@@ -49,7 +50,8 @@ def update_i3_colors(
         colors: list, 
         compliments: list, 
         dmenu: bool, 
-        img_path: str
+        img_path: str,
+        menu_keybind: str,
         ) -> None:
     
     data = ''
@@ -73,10 +75,10 @@ def update_i3_colors(
         if "set $bgimage" in line:
             data[i] = 'set $bgimage ' + img_path + '\n'
         # update i3 lock image        
-        if "bindsym $mod+d exec --no-startup-id dmenu_run" in line:
+        if f"bindsym {menu_keybind} exec --no-startup-id dmenu_run" in line:
             if dmenu:
                 print('[bold red]Updating Dmenu color scheme')
-                data[i] = f"bindsym $mod+d exec --no-startup-id dmenu_run -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
+                data[i] = f"bindsym {menu_keybind} exec --no-startup-id dmenu_run -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
 
 
     with open(config_path, 'w') as file:

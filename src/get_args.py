@@ -2,11 +2,16 @@ import user_interface
 import manage_saves
 import os
 from rich import print
+
+
 def get_args(args, walls_dir) -> tuple:
     
     # arguments that can be passed into program
+    VALID_ARGS = ['-r', '-p', '--initialize', '--reconfigure']
+    
     initialize = False
     reconfigure = False
+
     theme = None
     VALID_ARGS = ['-r', '-p', '--initialize', '--reconfigure']
     
@@ -16,7 +21,6 @@ def get_args(args, walls_dir) -> tuple:
         if isFile == True:
              print("reached")
              theme = manage_saves.load_theme(args[index + 1])
-
    
     if '-r' in args:
         img_path = user_interface.pickRandomWallpaper(walls_dir)
@@ -32,6 +36,7 @@ def get_args(args, walls_dir) -> tuple:
     if '--reconfigure' in args:
         reconfigure = True
     return img_path, initialize, reconfigure, theme  
+
 
 def usage(args) -> None:
     print(f"""Instant Rice - An automatic theming utilitiy

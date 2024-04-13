@@ -35,7 +35,7 @@ if __name__ == '__main__':
             update_rofi.updateRofiTheme(config.rofi_config, hex_colors, hex_compliments)
         
         if config.i3_config:
-            update_i3.updatei3Theme(config.i3_config, img_path, hex_colors, hex_compliments, config.generate_i3_lock, config.use_dmenu, config.i3_lock_image)
-    
+            update_i3.updatei3Theme(config.i3_config, img_path, hex_colors, hex_compliments, config.generate_i3_lock, config.use_dmenu, config.i3_lock_image, config.menu_keybind)
+
     else:
         usage(sys.argv)
