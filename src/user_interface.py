@@ -122,10 +122,10 @@ def themeSelector(theme_dir):
         colors = ''
         comp_colors = ''
         for j in range(len(theme['colors'])):
-            colors += f'[on {theme['colors'][j]}]  [/on {theme['colors'][j]}]'
-            comp_colors += f'[on {theme['comp_colors'][j]}]  [/on {theme['comp_colors'][j]}]'
-        print(f'{colors} Theme ({i}): {theme['name']}\n{comp_colors} Wallpaper: {theme['wallpaper']}')
-        os.system(f'viu {theme['wallpaper']} -w 50')
+            colors += f'[on {theme["colors"][j]}]  [/on {theme["colors"][j]}]'
+            comp_colors += f'[on {theme["comp_colors"][j]}]  [/on {theme["comp_colors"][j]}]'
+        print(f'{colors} Theme ({i}): {theme["name"]}\n{comp_colors} Wallpaper: {theme["wallpaper"]}')
+        os.system(f'viu {theme["wallpaper"]} -w 50')
     print(f'[bold green]Select theme (0, {num_themes})')
 
     
