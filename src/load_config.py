@@ -90,6 +90,7 @@ class systemConfig:
                 else:
                     print(f'Invalid configuration parameter at line {i}:\n{line}.\nUsing default \
                             configuration of 15 palettes.')
+                    input("press [enter] to continue...")
 
             if "theme_directory" in line:
                 match = line.strip().split(' ')

@@ -6,9 +6,9 @@ from rich import print
 
 def updatei3Theme(
         config_path: str, 
-        img_path: str, 
-        colors: list, 
-        compliments: list, 
+        img_paths: list[str], 
+        colors: list[str], 
+        compliments: list[str], 
         update_i3_lock: bool, 
         dmenu: bool,
         lock_img_path: str,
@@ -18,10 +18,10 @@ def updatei3Theme(
     print('[bold red]Updating i3 color scheme')
     
 
-    update_i3_colors(config_path, colors, compliments, dmenu, img_path, menu_keybind)
+    update_i3_configuration(config_path, colors, compliments, dmenu, img_paths, menu_keybind)
      
     if update_i3_lock:
-        change_i3_lock_img(img_path, lock_img_path)
+        change_i3_lock_img(img_paths[0], lock_img_path)
     
     
     print("[bold red]Restarting i3")
@@ -45,17 +45,18 @@ def change_i3_lock_img(img_path: str, lock_img_path):
     os.rename('lock.png', lock_img_path)
 
 
-def update_i3_colors(
+def update_i3_configuration(
         config_path: str, 
-        colors: list, 
-        compliments: list, 
+        colors: list[str], 
+        compliments: list[str], 
         dmenu: bool, 
-        img_path: str,
+        img_paths: list[str],
         menu_keybind: str,
         ) -> None:
     
     data = ''
-    
+    bg_set = False
+
     with open(config_path, 'r') as file:
         data = file.readlines()
      
@@ -72,13 +73,18 @@ def update_i3_colors(
         if "set $in-text" in line:
             data[i] = 'set $in-text ' + compliments[1] + '\n'
         # update background image
-        if "set $bgimage" in line:
-            data[i] = 'set $bgimage ' + img_path + '\n'
+        if not bg_set and "set $bgimage" in line:
+            if len(img_paths) > 1:
+                for j in range(len(img_paths)):
+                    data[i + j] = f'set $bgimage{j} ' + img_paths[j] + '\n'
+                bg_set = True
+            else: 
+                data[i] = 'set $bgimage ' + img_paths[0] + '\n'
         # update i3 lock image        
         if f"bindsym {menu_keybind} exec --no-startup-id dmenu_run" in line:
             if dmenu:
                 print('[bold red]Updating Dmenu color scheme')
-                data[i] = f"bindsym {menu_keybind} exec --no-startup-id dmenu_run -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
+                data[i] = f"bindsym {menu_keybind} exec --no-startup-id dmenu_run -c -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
 
 
     with open(config_path, 'w') as file:
