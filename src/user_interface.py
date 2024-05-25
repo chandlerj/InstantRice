@@ -141,15 +141,16 @@ def themeSelector(theme_dir):
         comp_colors = ''
         wallpapers = theme['wallpaper'] 
         for j in range(len(theme['colors'])):
-            colors += f'[on {theme['colors'][j]}]  [/on {theme['colors'][j]}]'
-            comp_colors += f'[on {theme['comp_colors'][j]}]  [/on {theme['comp_colors'][j]}]'
-
+            colors += f'[on {theme["colors"][j]}]  [/on {theme["colors"][j]}]'
+            comp_colors += f'[on {theme["comp_colors"][j]}]  [/on {theme["comp_colors"][j]}]'
         print(f'{colors} Theme ({i}): {theme['name']}\n{comp_colors} Wallpaper{'s' if type(wallpapers) == list else ''}: {theme['wallpaper']}')
         if type(wallpapers) == list:
             for path in wallpapers:
                 os.system(f'viu {path} -w 50')
         if type(wallpapers) == str:
-                os.system(f'viu {wallpapers} -w 50')
+                os.system(f'viu {wallpapers} -w 50')            
+
+
     print(f'[bold green]Select theme (0, {num_themes})')
 
     
