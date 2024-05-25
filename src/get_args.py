@@ -12,21 +12,25 @@ def get_args(args, walls_dir, theme_dir) -> tuple:
     initialize = False
     reconfigure = False
     theme = None
-    img_path = ''
-    if '-p' in args:
+    img_path = []
+    if '-p' in args: # use colors from a theme
         index = args.index('-p')
         isFile = os.path.isfile(args[index + 1])
         if isFile == True:
              theme = manage_saves.load_theme(args[index + 1])
-        img_path = grab_image(args) 
-    elif '-t' in args:
+        img_path = grab_images(args, index + 1) 
+    elif '-t' in args: # use theme picker ui to select theme
         theme = user_interface.themeSelector(theme_dir)
-        img_path = theme['wallpaper']
-    elif '-r' in args:
-        img_path = user_interface.pickRandomWallpaper(walls_dir)
+        img_path = theme['wallpaper'] if type(theme['wallpaper']) == list else list(theme['wallpaper'])
+    elif '-r' in args: # create a theme from a random wallpaper
+        index = args.index('-r')
+        num_wallpapers = len(args) - index
+        print(num_wallpapers)
+        img_path = user_interface.pickRandomWallpaper(walls_dir, num_wallpapers)
     else:
-        img_path = grab_image(args)
-
+        img_path = grab_images(args, 1)
+    
+    # neither of these do anything useful right now
     if '--initialize' in args:
         initialize = True
     if '--reconfigure' in args:
@@ -34,14 +38,16 @@ def get_args(args, walls_dir, theme_dir) -> tuple:
     return img_path, initialize, reconfigure, theme  
 
 
-def grab_image(args):
-    img_path = f"{os.getcwd()}/{args[1]}"
-    if not os.path.exists(img_path):
-        print(f'[bold red]ERROR: invalid image path {os.getcwd()}/{args[1]}')
-        exit(2)
-    else:
-        return img_path
-
+def grab_images(args: list[str], offset: int):
+    images = []
+    for i in range(offset, len(args)):
+        img_path = f"{os.getcwd()}/{args[i]}"
+        if not os.path.exists(img_path):
+            print(f'[bold red]ERROR: invalid image path {os.getcwd()}/{args[i]}')
+            exit(2)
+        else:
+            images.append(img_path)
+    return images
 
 def usage(args) -> None:
     print(f"""Instant Rice - An automatic theming utilitiy
