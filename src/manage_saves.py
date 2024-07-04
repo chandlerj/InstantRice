@@ -3,7 +3,7 @@ import json
 import os
 
 class Theme:
-    def __init__(self, colors, comp_colors, wallpaper, name):
+    def __init__(self, colors: list[str], comp_colors: list[str], wallpaper: str, name: str):
         self.colors = colors
         self.comp_colors = comp_colors
         self.wallpaper = wallpaper

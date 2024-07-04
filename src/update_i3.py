@@ -21,38 +21,41 @@ def updatei3Theme(
     update_i3_configuration(config_path, colors, compliments, dmenu, img_paths, menu_keybind)
      
     if update_i3_lock:
-        change_i3_lock_img(img_paths[0], lock_img_path)
-    
-    
+        if type(img_paths) == list:
+            print(img_paths)
+            change_i3_lock_img(img_paths[0], lock_img_path)
+        if type(img_paths) == str:
+            change_i3_lock_img(img_paths, lock_img_path)
+
     print("[bold red]Restarting i3")
     os.system("i3 restart")
 
 
 def change_i3_lock_img(img_path: str, lock_img_path):
     img = cv.imread(img_path)
-    
+
     imgHeight, imgWidth, _ = img.shape
     screenWidth, screenHeight = getScreenResolution()
     h_lock_scale = screenWidth / imgWidth
     v_lock_scale = screenHeight / imgHeight
-    
+
     print('[bold red]Creating lock screen')
-      
+
     dim = (int(imgWidth * h_lock_scale), int(imgHeight * v_lock_scale))
     img = cv.resize(img, dim, interpolation= cv.INTER_AREA)
-     
+    
     cv.imwrite('lock.png', img)
     os.rename('lock.png', lock_img_path)
 
 
 def update_i3_configuration(
-        config_path: str, 
-        colors: list[str], 
-        compliments: list[str], 
-        dmenu: bool, 
-        img_paths: list[str],
-        menu_keybind: str,
-        ) -> None:
+    config_path: str, 
+    colors: list[str], 
+    compliments: list[str], 
+    dmenu: bool, 
+    img_paths: list[str],
+    menu_keybind: str,
+    ) -> None:
     
     data = ''
     bg_set = False
@@ -74,17 +77,18 @@ def update_i3_configuration(
             data[i] = 'set $in-text ' + compliments[1] + '\n'
         # update background image
         if not bg_set and "set $bgimage" in line:
-            if len(img_paths) > 1:
+            if type(img_paths) == list:
                 for j in range(len(img_paths)):
                     data[i + j] = f'set $bgimage{j} ' + img_paths[j] + '\n'
                 bg_set = True
             else: 
-                data[i] = 'set $bgimage ' + img_paths[0] + '\n'
+                data[i] = 'set $bgimage0 ' + str(img_paths) + '\n'
+                bg_set = True
         # update i3 lock image        
         if f"bindsym {menu_keybind} exec --no-startup-id dmenu_run" in line:
             if dmenu:
                 print('[bold red]Updating Dmenu color scheme')
-                data[i] = f"bindsym {menu_keybind} exec --no-startup-id dmenu_run -c -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
+                data[i] = f"bindsym {menu_keybind} exec --no-startup-id dmenu_run -c -i -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
 
 
     with open(config_path, 'w') as file:
