@@ -84,11 +84,11 @@ def update_i3_configuration(
             else: 
                 data[i] = 'set $bgimage0 ' + str(img_paths) + '\n'
                 bg_set = True
-        # update i3 lock image        
-        if f"bindsym {menu_keybind} exec --no-startup-id dmenu_run" in line:
-            if dmenu:
-                print('[bold red]Updating Dmenu color scheme')
-                data[i] = f"bindsym {menu_keybind} exec --no-startup-id dmenu_run -c -i -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
+        # update i3 lock image       
+        #if f"bindsym {menu_keybind} exec --no-startup-id dmenu_run" in line:
+        #    if dmenu:
+        #        print('[bold red]Updating Dmenu color scheme')
+        #        data[i] = f"bindsym {menu_keybind} exec --no-startup-id dmenu_run -c -i -nb '{colors[0]}' -sf '{compliments[0]}' -sb '{colors[1]}' -nf '{compliments[1]}'\n"
 
 
     with open(config_path, 'w') as file:
